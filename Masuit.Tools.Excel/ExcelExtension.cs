@@ -55,6 +55,24 @@ public static class ExcelExtension
     /// <param name="password">密码</param>
     /// <param name="settings">列设置</param>
     /// <returns>内存流</returns>
+    public static PooledMemoryStream ToExcel(this IEnumerable<DataTable> sheetTables, string password = null, ColumnSettings settings = null)
+    {
+        using var pkg = new ExcelPackage();
+        foreach (var pair in sheetTables)
+        {
+            CreateWorksheet(pkg, pair, settings);
+        }
+
+        return SaveAsStream(pkg, password);
+    }
+
+    /// <summary>
+    /// 将内存表自动填充到Excel
+    /// </summary>
+    /// <param name="sheetTables">sheet名和内存表的映射</param>
+    /// <param name="password">密码</param>
+    /// <param name="settings">列设置</param>
+    /// <returns>内存流</returns>
     public static PooledMemoryStream ToExcel<T>(this Dictionary<string, IEnumerable<T>> sheetTables, string password = null, ColumnSettings settings = null)
     {
         using var pkg = new ExcelPackage();
